@@ -39,6 +39,7 @@ class SignUpScreen extends StatelessWidget {
                     ),
                     Observer(builder: (_){
                       return TextField(
+                        enabled: !signupStore.loading,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: "Exemplo João S.",
@@ -53,72 +54,100 @@ class SignUpScreen extends StatelessWidget {
                       title: "E-mail",
                       subtitle: "Enviaremos um e-mail de confirmação.",
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Exemplo joao@gmail.com",
-                        isDense: true,
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      autocorrect: false,
-                    ),
+                    Observer(builder: (_) {
+                      return TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Exemplo joao@gmail.com",
+                            isDense: true,
+                            errorText: signupStore.emailError
+                        ),
+                        onChanged: signupStore.setEmail,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                      );
+                    }),
                     const SizedBox(height: 16,),
                     FieldTitle(
                       title: "Celular",
                       subtitle: "Proteja sua conta.",
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "(99) 99999-3333",
-                        isDense: true,
-                      ),
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly,
-                        TelefoneInputFormatter(),
-                      ],
-                    ),
+                    Observer(builder: (_){
+                      return TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "(99) 99999-3333",
+                          isDense: true,
+                          errorText: signupStore.phoneError,
+                        ),
+                        onChanged: signupStore.setPhone,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly,
+                          TelefoneInputFormatter(),
+                        ],
+                      );
+                    }),
+                    const SizedBox(height: 16,),
                     FieldTitle(
                       title: "Senha",
                       subtitle: "Use letras, números e caracteres especiais.",
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: "Senha",
-                        isDense: true,
-                      ),
-                      obscureText: true,
-                    ),
+                    Observer(builder: (_){
+                      return TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          hintText: "Senha",
+                          isDense: true,
+                          errorText: signupStore.pass1Error,
+                        ),
+                        onChanged: signupStore.setPass1,
+                        obscureText: true,
+                      );
+                    }),
                     const SizedBox(height: 16,),
                     FieldTitle(
                       title: "Confirma Senha",
                       subtitle: "Repita a senha.",
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: "Repetir senha",
-                        isDense: true,
-                      ),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 16,),
-                    Container(
-                      height: 40,
-                      margin: const EdgeInsets.symmetric(vertical: 12),
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    Observer(builder: (_){
+                      return TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          hintText: "Repetir senha",
+                          isDense: true,
+                          errorText: signupStore.pass2Error,
                         ),
-                        color: Colors.orange,
-                        child: Text('Cadastrar'),
-                        textColor: Colors.white,
-                        elevation: 0,
-                        onPressed: () {},
-                      ),
-                    ),
+                        onChanged: signupStore.setPass2,
+                        obscureText: true,
+                      );
+                    }),
+                    const SizedBox(height: 16,),
+                    Observer(builder: (_){
+                      return Container(
+                        height: 40,
+                        margin: const EdgeInsets.symmetric(vertical: 12),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          color: Colors.orange,
+                          disabledColor: Colors.orange.withAlpha(120),
+                          child: signupStore.loading
+                            ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                          )
+                            : Text('CADASTRAR'),
+                          textColor: Colors.white,
+                          elevation: 0,
+                          onPressed: signupStore.signUpPressed,
+                        ),
+                      );
+                    }),
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
